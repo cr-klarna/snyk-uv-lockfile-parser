@@ -7,14 +7,14 @@ describe('buildDepGraph', () => {
 
   beforeEach(() => {
     depGraphBuilder = new DepGraphBuilder(
-      { name: 'poetry' },
+      { name: 'uv' },
       { name: 'myPkg', version: '1.42.2' },
     );
   });
 
   it('should build a dep-graph with root node named and versioned as per project info in manifest file.', () => {
     const expectedGraph = depGraphBuilder.build();
-    const manifestContents = `[tool.poetry]
+    const manifestContents = `[project]
       name = "myPkg"
       version = "1.42.2"`;
     const lockfileContents = `package = []`;
@@ -25,7 +25,7 @@ describe('buildDepGraph', () => {
 
   it('on fixture oneDepNoTransitives yields a graph with only package and its dep', () => {
     const expectedGraph = depGraphBuilder
-      .addPkgNode({ name: 'six', version: '1.15.0' }, 'six', {
+      .addPkgNode({ name: 'six', version: '1.14.0' }, 'six', {
         labels: { scope: 'prod' },
       })
       .connectDep(depGraphBuilder.rootNodeId, 'six')
@@ -40,11 +40,11 @@ describe('buildDepGraph', () => {
 
   it('on fixture oneDepWithTransitive yields graph with the two packages', () => {
     const expectedGraph = depGraphBuilder
-      .addPkgNode({ name: 'jinja2', version: '2.11.2' }, 'jinja2', {
+      .addPkgNode({ name: 'jinja2', version: '2.11.3' }, 'jinja2', {
         labels: { scope: 'prod' },
       })
       .connectDep(depGraphBuilder.rootNodeId, 'jinja2')
-      .addPkgNode({ name: 'markupsafe', version: '1.1.1' }, 'markupsafe', {
+      .addPkgNode({ name: 'markupsafe', version: '3.0.2' }, 'markupsafe', {
         labels: { scope: 'prod' },
       })
       .connectDep('jinja2', 'markupsafe')
@@ -57,13 +57,13 @@ describe('buildDepGraph', () => {
     ).toBe(true);
   });
 
-  describe('on fixture oneDepWithOneDevDep yields graph with two packages', () => {
-    const scenarioPath = 'scenarios/one-dep-one-devdep';
+  describe('on fixture oneDepWithOneLegacyDevDep yields graph with two packages', () => {
+    const scenarioPath = 'scenarios/one-dep-one-legacydevdep';
 
-    it('oneDepWithOneDevDep yields graph with two packages when including dev packages', () => {
+    it('oneDepWithOneLegacyDevDep yields graph with two packages when including dev packages', () => {
       const includeDevDependencies = true;
       const expectedGraph = depGraphBuilder
-        .addPkgNode({ name: 'six', version: '1.15.0' }, 'six', {
+        .addPkgNode({ name: 'six', version: '1.14.0' }, 'six', {
           labels: { scope: 'prod' },
         })
         .connectDep(depGraphBuilder.rootNodeId, 'six')
@@ -83,7 +83,7 @@ describe('buildDepGraph', () => {
     it('on fixture oneDepWithOneDevDep yields graph with one package when ignoring dev packages', () => {
       const includeDevDependencies = false;
       const expectedGraph = depGraphBuilder
-        .addPkgNode({ name: 'six', version: '1.15.0' }, 'six', {
+        .addPkgNode({ name: 'six', version: '1.14.0' }, 'six', {
           labels: { scope: 'prod' },
         })
         .connectDep(depGraphBuilder.rootNodeId, 'six')
@@ -103,7 +103,7 @@ describe('buildDepGraph', () => {
     it('oneDevDepWithOneDevDepGroup yields graph with two packages when including dev packages', () => {
       const includeDevDependencies = true;
       const expectedGraph = depGraphBuilder
-        .addPkgNode({ name: 'six', version: '1.16.0' }, 'six', {
+        .addPkgNode({ name: 'six', version: '1.14.0' }, 'six', {
           labels: { scope: 'prod' },
         })
         .connectDep(depGraphBuilder.rootNodeId, 'six')
@@ -123,7 +123,7 @@ describe('buildDepGraph', () => {
     it('on fixture oneDevDepWithOneDevDepGroup yields graph with one package when ignoring dev packages', () => {
       const includeDevDependencies = false;
       const expectedGraph = depGraphBuilder
-        .addPkgNode({ name: 'six', version: '1.16.0' }, 'six', {
+        .addPkgNode({ name: 'six', version: '1.14.0' }, 'six', {
           labels: { scope: 'prod' },
         })
         .connectDep(depGraphBuilder.rootNodeId, 'six')
@@ -137,13 +137,13 @@ describe('buildDepGraph', () => {
     });
   });
 
-  describe('on fixture oneDepWithOneDevDepAndOneDevDepGroup yields graph with three packages', () => {
-    const scenarioPath = 'scenarios/one-dep-one-devdep-one-devdep-group';
+  describe('on fixture oneDepWithOneLegacyDevDepAndOneDevDepGroup yields graph with three packages', () => {
+    const scenarioPath = 'scenarios/one-dep-one-legacydevdep-one-devdep-group';
 
-    it('oneDepWithOneDevDepAndOneDevDepGroup yields graph with three packages when including dev packages', () => {
+    it('oneDepWithOneLegacyDevDepAndOneDevDepGroup yields graph with three packages when including dev packages', () => {
       const includeDevDependencies = true;
       const expectedGraph = depGraphBuilder
-        .addPkgNode({ name: 'six', version: '1.16.0' }, 'six', {
+        .addPkgNode({ name: 'six', version: '1.14.0' }, 'six', {
           labels: { scope: 'prod' },
         })
         .connectDep(depGraphBuilder.rootNodeId, 'six')
@@ -164,10 +164,10 @@ describe('buildDepGraph', () => {
       expect(isEqual).toBe(true);
     });
 
-    it('on fixture oneDepWithOneDevDepAndOneDevDepGroup yields graph with one package when ignoring dev packages', () => {
+    it('on fixture oneDepWithOneLegacyDevDepAndOneDevDepGroup yields graph with one package when ignoring dev packages', () => {
       const includeDevDependencies = false;
       const expectedGraph = depGraphBuilder
-        .addPkgNode({ name: 'six', version: '1.16.0' }, 'six', {
+        .addPkgNode({ name: 'six', version: '1.14.0' }, 'six', {
           labels: { scope: 'prod' },
         })
         .connectDep(depGraphBuilder.rootNodeId, 'six')
@@ -181,13 +181,14 @@ describe('buildDepGraph', () => {
     });
   });
 
-  describe('on fixture oneDepWithOneDevDepAndMultipleDevDepGroups yields graph with three packages', () => {
-    const scenarioPath = 'scenarios/one-dep-one-devdep-multiple-devdep-groups';
+  describe('on fixture oneDepWithOneLegacyDevDepAndMultipleDevDepGroups yields graph with three packages', () => {
+    const scenarioPath =
+      'scenarios/one-dep-one-legacydevdep-multiple-devdep-groups';
 
-    it('oneDepWithOneDevDepAndMultipleDevDepGroups yields graph with three packages when including dev packages', () => {
+    it('oneDepWithOneLegacyDevDepAndMultipleDevDepGroups yields graph with three packages when including dev packages', () => {
       const includeDevDependencies = true;
       const expectedGraph = depGraphBuilder
-        .addPkgNode({ name: 'six', version: '1.16.0' }, 'six', {
+        .addPkgNode({ name: 'six', version: '1.14.0' }, 'six', {
           labels: { scope: 'prod' },
         })
         .connectDep(depGraphBuilder.rootNodeId, 'six')
@@ -204,7 +205,6 @@ describe('buildDepGraph', () => {
         })
         .connectDep(depGraphBuilder.rootNodeId, 'whattype')
         .build();
-
       const isEqual = depGraphForScenarioAt(
         scenarioPath,
         includeDevDependencies,
@@ -212,10 +212,10 @@ describe('buildDepGraph', () => {
       expect(isEqual).toBe(true);
     });
 
-    it('on fixture oneDepWithOneDevDepAndMultipleDevDepGroups yields graph with one package when ignoring dev packages', () => {
+    it('on fixture oneDepWithOneLegacyDevDepAndMultipleDevDepGroups yields graph with one package when ignoring dev packages', () => {
       const includeDevDependencies = false;
       const expectedGraph = depGraphBuilder
-        .addPkgNode({ name: 'six', version: '1.16.0' }, 'six', {
+        .addPkgNode({ name: 'six', version: '1.14.0' }, 'six', {
           labels: { scope: 'prod' },
         })
         .connectDep(depGraphBuilder.rootNodeId, 'six')
@@ -236,7 +236,7 @@ describe('buildDepGraph', () => {
   });
 
   it('on fixture with unsafe package yields graph successfully', () => {
-    // Package is in virtualenv and doesn't have an entry in poetry.lock
+    // Package is in virtualenv and doesn't have an entry in uv.lock
     const actualGraph = depGraphForScenarioAt('scenarios/unsafe-packages');
     expect(actualGraph).toBeDefined();
     expect(actualGraph.getDepPkgs().length).toBe(1);

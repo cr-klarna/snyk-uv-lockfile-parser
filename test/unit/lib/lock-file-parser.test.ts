@@ -4,7 +4,7 @@ import { OpenSourceEcosystems } from '@snyk/error-catalog-nodejs-public';
 describe('when loading lockfile', () => {
   it('should throw LockFileNotValid if toml parsing throws an error', () => {
     const fileContents = `[[package]
-      category = 'main"`;
+      version = '1.0.0"`;
     expect(() => packageSpecsFrom(fileContents)).toThrow(
       OpenSourceEcosystems.UnparseableLockFileError,
     );
@@ -17,18 +17,15 @@ describe('when loading lockfile', () => {
 
   it('should parse a lockfile and return a list of its packages and their dependency names', () => {
     const fileContents = `[[package]]
-      category = "main"
       name = "pkg_a"
-      optional = false
       version = "2.11.2"
-      
-      [package.dependencies]
-      pkg_b = ">=0.23"
-      
+
+      dependencies = [
+        { name = "pkg_b" }
+      ]
+
       [[package]]
-      category = "main"
       name = "pkg_b"
-      optional = false
       version = "1.1.1"`;
     const lockFileDependencies = packageSpecsFrom(fileContents);
     expect(lockFileDependencies.length).toBe(2);

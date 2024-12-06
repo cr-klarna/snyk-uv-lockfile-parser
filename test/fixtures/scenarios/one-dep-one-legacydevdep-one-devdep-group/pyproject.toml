@@ -6,3 +6,13 @@ authors = []
 dependencies = [
   "six>=1.14,<1.15"
 ]
+
+[tool.uv]
+dev-dependencies = [
+  "isOdd==0.1.2"
+]
+
+[dependency-groups]
+dev = [
+  "simple-enum==0.0.6"
+]

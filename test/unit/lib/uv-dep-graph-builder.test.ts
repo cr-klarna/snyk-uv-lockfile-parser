@@ -1,17 +1,17 @@
-import { build } from '../../../lib/poetry-dep-graph-builder';
-import { PoetryLockFileDependency } from '../../../lib/lock-file-parser';
+import { build } from '../../../lib/uv-dep-graph-builder';
+import { UVLockFileDependency } from '../../../lib/lock-file-parser';
 import { PkgInfo } from '@snyk/dep-graph';
 
-describe('poetry-dep-graph-builder', () => {
+describe('uv-dep-graph-builder', () => {
   const rootPkg: PkgInfo = { name: 'RootPkg', version: '1.0.0' };
 
   describe('build', () => {
     it('should return a graph of given dependencies successfully', () => {
       // given
-      const pkgA = generatePoetryLockFileDependency('pkg-a');
-      const pkgB = generatePoetryLockFileDependency('pkg_b', ['pkg-c']);
-      const pkgC = generatePoetryLockFileDependency('pkg-c');
-      const pkgSpecs: PoetryLockFileDependency[] = [pkgA, pkgB, pkgC];
+      const pkgA = generateUVLockFileDependency('pkg-a');
+      const pkgB = generateUVLockFileDependency('pkg_b', ['pkg-c']);
+      const pkgC = generateUVLockFileDependency('pkg-c');
+      const pkgSpecs: UVLockFileDependency[] = [pkgA, pkgB, pkgC];
 
       // when
       const result = build(
@@ -37,13 +37,13 @@ describe('poetry-dep-graph-builder', () => {
       expect(nodeWithTransitive!.deps[0].nodeId).toBe(pkgC.name);
     });
 
-    it('should ignore poetry installed virtualenv packages as transitives', () => {
+    it('should ignore uv installed virtualenv packages as transitives', () => {
       // given
-      const pkgA = generatePoetryLockFileDependency('pkg-a');
-      const wheel = generatePoetryLockFileDependency('wheel');
-      const setuptools = generatePoetryLockFileDependency('setuptools');
-      const distribute = generatePoetryLockFileDependency('distribute');
-      const pip = generatePoetryLockFileDependency('pip');
+      const pkgA = generateUVLockFileDependency('pkg-a');
+      const wheel = generateUVLockFileDependency('wheel');
+      const setuptools = generateUVLockFileDependency('setuptools');
+      const distribute = generateUVLockFileDependency('distribute');
+      const pip = generateUVLockFileDependency('pip');
       pkgA.dependencies = [
         wheel.name,
         setuptools.name,
@@ -65,9 +65,9 @@ describe('poetry-dep-graph-builder', () => {
 
     it('should not add node twice when there are circular dependencies', () => {
       // given
-      const pkgA = generatePoetryLockFileDependency('pkg-a', ['pkg-b']);
-      const pkgB = generatePoetryLockFileDependency('pkg-b', ['pkg-a']);
-      const pkgC = generatePoetryLockFileDependency('pkg-c', ['pkg-a']);
+      const pkgA = generateUVLockFileDependency('pkg-a', ['pkg-b']);
+      const pkgB = generateUVLockFileDependency('pkg-b', ['pkg-a']);
+      const pkgC = generateUVLockFileDependency('pkg-c', ['pkg-a']);
 
       // when
       const result = build(
@@ -99,7 +99,7 @@ describe('poetry-dep-graph-builder', () => {
 
     it('should treat underscores in manifest as equal to hyphens in lockfile', () => {
       // given
-      const pkgA = generatePoetryLockFileDependency('pkg-a');
+      const pkgA = generateUVLockFileDependency('pkg-a');
 
       // when
       const result = build(rootPkg, [{ name: 'pkg-a', isDev: false }], [pkgA]);
@@ -113,7 +113,7 @@ describe('poetry-dep-graph-builder', () => {
 
     it('should treat hyphens in manifest as equal to underscores in lockfile', () => {
       // given
-      const pkgA = generatePoetryLockFileDependency('pkg_a');
+      const pkgA = generateUVLockFileDependency('pkg_a');
 
       // when
       const result = build(rootPkg, [{ name: 'pkg-a', isDev: false }], [pkgA]);
@@ -128,9 +128,7 @@ describe('poetry-dep-graph-builder', () => {
     it('should log warning if metadata cannot be found in pkgSpecs', () => {
       // given
       const missingPkg = 'non-existent-pkg';
-      const pkgA = generatePoetryLockFileDependency('pkg-a', [
-        'non-existent-pkg',
-      ]);
+      const pkgA = generateUVLockFileDependency('pkg-a', ['non-existent-pkg']);
       const consoleSpy = jest.spyOn(console, 'warn').mockImplementation();
 
       // when
@@ -143,9 +141,9 @@ describe('poetry-dep-graph-builder', () => {
   });
 });
 
-function generatePoetryLockFileDependency(
+function generateUVLockFileDependency(
   pkgName: string,
   dependencies: string[] = [],
-): PoetryLockFileDependency {
+): UVLockFileDependency {
   return { name: pkgName, version: '1.0.0', dependencies: dependencies };
 }

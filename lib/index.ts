@@ -1,8 +1,8 @@
 import { DepGraph, PkgInfo } from '@snyk/dep-graph';
 import * as manifest from './manifest-parser';
 import * as lockFile from './lock-file-parser';
-import { PoetryLockFileDependency } from './lock-file-parser';
-import * as poetryDepGraphBuilder from './poetry-dep-graph-builder';
+import { UVLockFileDependency } from './lock-file-parser';
+import * as uvDepGraphBuilder from './uv-dep-graph-builder';
 
 export function buildDepGraph(
   manifestFileContents: string,
@@ -14,7 +14,7 @@ export function buildDepGraph(
     includeDevDependencies,
   );
   const pkgDetails: PkgInfo = manifest.pkgInfoFrom(manifestFileContents);
-  const pkgSpecs: PoetryLockFileDependency[] =
+  const pkgSpecs: UVLockFileDependency[] =
     lockFile.packageSpecsFrom(lockFileContents);
-  return poetryDepGraphBuilder.build(pkgDetails, dependencies, pkgSpecs);
+  return uvDepGraphBuilder.build(pkgDetails, dependencies, pkgSpecs);
 }

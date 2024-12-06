@@ -3,43 +3,55 @@ import { OpenSourceEcosystems } from '@snyk/error-catalog-nodejs-public';
 
 export function packageSpecsFrom(
   lockFileContents: string,
-): PoetryLockFileDependency[] {
-  let lockFile: PoetryLockFile;
+): UVLockFileDependency[] {
+  let lockFile: UVLockFile;
   try {
-    lockFile = toml.parse(lockFileContents) as unknown as PoetryLockFile;
+    lockFile = toml.parse(lockFileContents) as unknown as UVLockFile;
   } catch (error) {
     throw new OpenSourceEcosystems.UnparseableLockFileError(
-      'The poetry.lock file is not parsable.',
+      'The uv.lock file is not parsable.',
       { error },
     );
   }
 
   if (!lockFile.package) {
     throw new OpenSourceEcosystems.UnparseableLockFileError(
-      'The poetry.lock file contains no package stanza.',
+      'The uv.lock file contains no package stanza.',
     );
   }
 
-  return lockFile.package.map((pkg) => {
-    return {
-      name: pkg.name,
-      version: pkg.version,
-      dependencies: Object.keys(pkg.dependencies || []),
-    };
-  });
+  return lockFile.package
+    .filter((pkg) => pkg.source?.virtual !== '.')
+    .map((pkg) => {
+      return {
+        name: pkg.name,
+        version: pkg.version,
+        dependencies: pkg.dependencies?.map((dep) => dep.name) || [],
+      };
+    });
 }
 
-interface PoetryLockFile {
+interface UVLockFile {
   package: Package[];
+}
+
+interface UVLockFileDependencyDeclaration {
+  name: string;
+}
+
+interface PackageSource {
+  registry?: string;
+  virtual?: string;
 }
 
 interface Package {
   name: string;
+  source?: PackageSource;
   version: string;
-  dependencies?: Record<string, PoetryLockFileDependency>;
+  dependencies?: UVLockFileDependencyDeclaration[];
 }
 
-export interface PoetryLockFileDependency {
+export interface UVLockFileDependency {
   name: string;
   version: string;
   dependencies: string[];

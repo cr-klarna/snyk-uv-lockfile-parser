@@ -1,10 +1,9 @@
 import { DepGraph, DepGraphBuilder, PkgInfo } from '@snyk/dep-graph';
-import { PoetryLockFileDependency } from './lock-file-parser';
+import { UVLockFileDependency } from './lock-file-parser';
 import { Dependency } from './manifest-parser';
 
-// Poetry uses the virtualenv to create an environment and this comes with these
+// UV uses the virtualenv to create an environment and this comes some
 // packages pre-installed, therefore they won't be part of the lockfile.
-// See: https://github.com/python-poetry/poetry/issues/3075#issuecomment-703334427
 const IGNORED_DEPENDENCIES: string[] = [
   'setuptools',
   'distribute',
@@ -15,16 +14,16 @@ const IGNORED_DEPENDENCIES: string[] = [
 export function build(
   pkgDetails: PkgInfo,
   dependencies: Dependency[],
-  pkgSpecs: PoetryLockFileDependency[],
+  pkgSpecs: UVLockFileDependency[],
 ): DepGraph {
-  const builder = new DepGraphBuilder({ name: 'poetry' }, pkgDetails);
+  const builder = new DepGraphBuilder({ name: 'uv' }, pkgDetails);
   addDependenciesToGraph(dependencies, pkgSpecs, builder.rootNodeId, builder);
   return builder.build();
 }
 
 function addDependenciesToGraph(
   dependencies: Dependency[],
-  pkgSpecs: PoetryLockFileDependency[],
+  pkgSpecs: UVLockFileDependency[],
   parentNodeId: string,
   builder: DepGraphBuilder,
 ) {
@@ -35,7 +34,7 @@ function addDependenciesToGraph(
 
 function addDependenciesForPkg(
   dependency: Dependency,
-  pkgSpecs: PoetryLockFileDependency[],
+  pkgSpecs: UVLockFileDependency[],
   parentNodeId: string,
   builder: DepGraphBuilder,
 ) {
@@ -70,7 +69,7 @@ function addDependenciesForPkg(
 }
 
 function isPkgAlreadyInGraph(
-  pkg: PoetryLockFileDependency,
+  pkg: UVLockFileDependency,
   builder: DepGraphBuilder,
 ): boolean {
   return builder
@@ -83,8 +82,8 @@ function isPkgAlreadyInGraph(
 
 function pkgLockInfoFor(
   pkgName: string,
-  pkgSpecs: PoetryLockFileDependency[],
-): PoetryLockFileDependency | undefined {
+  pkgSpecs: UVLockFileDependency[],
+): UVLockFileDependency | undefined {
   // From PEP 426 https://www.python.org/dev/peps/pep-0426/#name
   // All comparisons of distribution names MUST be case insensitive, and MUST
   // consider hyphens and underscores to be equivalent

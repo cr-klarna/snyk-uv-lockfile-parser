@@ -1,0 +1,10 @@
+version = 1
+requires-python = "==3.8.*"
+
+[[package]]
+name = "conflicting-python-declarations"
+version = "0.1.0"
+source = { virtual = "." }
+
+[package.metadata]
+requires-dist = [{ name = "typing", marker = "python_full_version < '3.4'" }]

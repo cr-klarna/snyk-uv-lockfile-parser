@@ -1,0 +1,59 @@
+version = 1
+requires-python = ">=3.12"
+
+[[package]]
+name = "isodd"
+version = "0.1.2"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/dc/7a/71662dc743b791eb6ec7ffff7b482fe0f3d736868662829dee1642364b6d/isOdd-0.1.2.tar.gz", hash = "sha256:99c0ef564aac474091d9146b36327ec45fbe80f741c90751d41eeb1eb63a487e", size = 1669 }
+
+[[package]]
+name = "mypkg"
+version = "1.42.2"
+source = { virtual = "." }
+dependencies = [
+    { name = "six" },
+]
+
+[package.dev-dependencies]
+dev = [
+    { name = "isodd" },
+    { name = "simple-enum" },
+]
+more-dev = [
+    { name = "whattype" },
+]
+
+[package.metadata]
+requires-dist = [{ name = "six", specifier = ">=1.14,<1.15" }]
+
+[package.metadata.requires-dev]
+dev = [
+    { name = "isodd", specifier = "==0.1.2" },
+    { name = "simple-enum", specifier = "==0.0.6" },
+]
+more-dev = [{ name = "whattype", specifier = "==0.0.1" }]
+
+[[package]]
+name = "simple-enum"
+version = "0.0.6"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/c4/c5/081bc34fab9229610f72edd7f7421b266dabd253393ac240ae334474a6f5/simple-enum-0.0.6.tar.gz", hash = "sha256:e088c788185d0d4a90892fe4b2ee7f973e4f0ae2f43e171ba128345b7c202f72", size = 8263 }
+
+[[package]]
+name = "six"
+version = "1.14.0"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/21/9f/b251f7f8a76dec1d6651be194dfba8fb8d7781d10ab3987190de8391d08e/six-1.14.0.tar.gz", hash = "sha256:236bdbdce46e6e6a3d61a337c0f8b763ca1e8717c03b369e87a7ec7ce1319c0a", size = 33857 }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/65/eb/1f97cb97bfc2390a276969c6fae16075da282f5058082d4cb10c6c5c1dba/six-1.14.0-py2.py3-none-any.whl", hash = "sha256:8f3cd2e254d8f793e7f3d6d9df77b92252b52637291d0f0da013c76ea2724b6c", size = 10938 },
+]
+
+[[package]]
+name = "whattype"
+version = "0.0.1"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/1e/4e/de8089b707ba20aff8ebf3ca7853945105b3aa150a95c75e7125db6c5227/whatType-0.0.1.tar.gz", hash = "sha256:e504994f4290430cdc4f3c974b77ee59f77bfaac004163241b596d8f6c84eeea", size = 14982 }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/9d/16/aee177b712c09e1ede4b98be9bb78bad25776cb87ec6ae40eed764bd959b/whatType-0.0.1-py3-none-any.whl", hash = "sha256:9c5476d1dbb404a4ca2570d38e82eef7d91aeb1b6e2f46593b8fe2f3418092be", size = 14815 },
+]

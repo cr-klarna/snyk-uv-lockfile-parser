@@ -1,10 +1,10 @@
 {
-  "name": "snyk-poetry-lockfile-parser",
-  "description": "Generate a dep graph given poetry.lock and pyproject.toml files",
-  "homepage": "https://github.com/snyk/snyk-poetry-lockfile-parser#readme",
+  "name": "snyk-uv-lockfile-parser",
+  "description": "Generate a dep graph given uv.lock and pyproject.toml files",
+  "homepage": "https://github.com/snyk/snyk-uv-lockfile-parser#readme",
   "repository": {
     "type": "git",
-    "url": "https://github.com/snyk/snyk-poetry-lockfile-parser"
+    "url": "https://github.com/snyk/snyk-uv-lockfile-parser"
   },
   "author": "snyk.io",
   "license": "Apache-2.0",

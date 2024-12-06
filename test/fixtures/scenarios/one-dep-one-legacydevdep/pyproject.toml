@@ -4,5 +4,10 @@ version = "1.42.2"
 description = ""
 authors = []
 dependencies = [
-  "jinja2>=2.11,<2.12"
+  "six>=1.14,<1.15"
+]
+
+[tool.uv]
+dev-dependencies = [
+  "isOdd==0.1.2"
 ]

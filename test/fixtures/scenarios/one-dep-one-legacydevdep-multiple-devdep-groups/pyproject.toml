@@ -7,7 +7,15 @@ dependencies = [
   "six>=1.14,<1.15"
 ]
 
+[tool.uv]
+dev-dependencies = [
+  "isOdd==0.1.2"
+]
+
 [dependency-groups]
 dev = [
-  "isOdd==0.1.2"
+  "simple-enum==0.0.6"
+]
+more-dev = [
+  "whatType==0.0.1"
 ]

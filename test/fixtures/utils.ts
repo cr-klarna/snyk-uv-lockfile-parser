@@ -12,7 +12,7 @@ export function readFixture(folderName: string): Fixture {
       'utf8',
     ),
     lockFileContents: fs.readFileSync(
-      `${__dirname}/${folderName}/poetry.lock`,
+      `${__dirname}/${folderName}/uv.lock`,
       'utf8',
     ),
   };
